@@ -11,6 +11,14 @@ class SubjectCreate(SubjectBase):
     """
     pass
 
+class subjectUpdate(SubjectBase):
+    """
+    Data required to update an existing subject.
+    All fields are optional.
+    """
+    name: Optional[str] = None
+    description: Optional[str] = None
+
 class SubjectOut(SubjectBase):
     """
     Data returned to a client.
