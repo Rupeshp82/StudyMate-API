@@ -37,22 +37,27 @@ def create_subject(
     return subject
 
 #get all subjects
-@router.get("/", response_model=List[schemas.SubjectOut])
-def get_subjects(db: Session = Depends(get_db)):
-    subjects = db.query(models.Subject).all()
+@router.get("/by-name/{name}", response_model=List[schemas.SubjectOut])
+def get_subjects_by_name(name: str, db: Session = Depends(get_db)):
+    subjects = db.query(models.Subject).filter(models.Subject.name == name).all()
+    if not subjects:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No subjects found with name '{name}'."
+        )
     return subjects
 
-@router.put("/{subject_id}", response_model=schemas.SubjectOut)
+@router.put("/{name}", response_model=schemas.SubjectOut)
 def update_subject(
-    subject_id: int,
+    name: str,
     subject_update: schemas.subjectUpdate,
     db: Session = Depends(get_db)
     ):
-    subject = db.query(models.Subject).filter(models.Subject.id == subject_id).first()
+    subject = db.query(models.Subject).filter(models.Subject.name == name).first()
     if not subject:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Subject with id '{subject_id}' not found."
+            detail=f"Subject with name '{name}' not found."
         )
     
     #check if updating name to an existing name
@@ -74,16 +79,16 @@ def update_subject(
     db.refresh(subject)
     return subject
 
-@router.delete("/{subject_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{name}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_subject(
-    subject_id: int,
+    name: str,
     db: Session = Depends(get_db)
     ):
-    subject = db.query(models.Subject).filter(models.Subject.id == subject_id).first()
+    subject = db.query(models.Subject).filter(models.Subject.name == name).first()
     if not subject:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Subject with id '{subject_id}' not found."
+            detail=f"Subject with name '{name}' not found."
         )
     
     db.delete(subject)
