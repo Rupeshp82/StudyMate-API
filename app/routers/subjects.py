@@ -12,7 +12,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-@router.post("/", response_model=schemas.SubjectOut, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=schemas.SubjectOut, status_code=status.HTTP_201_CREATED)
 def create_subject(
     subject: schemas.SubjectCreate, 
     db: Session = Depends(get_db)
@@ -36,6 +36,10 @@ def create_subject(
     db.refresh(subject)
     return subject
 
+@router.get("", response_model=List[schemas.SubjectOut])
+def get_all_subjects(db: Session = Depends(get_db)):
+    subjects = db.query(models.Subject).all()
+    return subjects
 #get all subjects
 @router.get("/by-name/{name}", response_model=List[schemas.SubjectOut])
 def get_subjects_by_name(name: str, db: Session = Depends(get_db)):
