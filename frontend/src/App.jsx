@@ -1,13 +1,26 @@
 import { useEffect, useState } from "react";
+import RegisterPage from "./app/register/page";
+import "./App.css";
 
 const API_BASE_URL = "http://localhost:8000";
 
+// Top-level app: choose which page to show
 function App() {
+  const showRegister = true; // change to false later to see subjects UI
+
+  return showRegister ? <RegisterPage /> : <SubjectsPage />;
+}
+
+// Your old subjects UI moved here
+function SubjectsPage() {
   const [subjects, setSubjects] = useState([]);
   const [newSubject, setNewSubject] = useState({ name: "", description: "" });
 
   const [editingSubjectName, setEditingSubjectName] = useState(null);
-  const [editedSubject, setEditedSubject] = useState({ name: "", description: "" });
+  const [editedSubject, setEditedSubject] = useState({
+    name: "",
+    description: "",
+  });
 
   async function fetchSubjects() {
     try {
@@ -17,7 +30,7 @@ function App() {
     } catch (error) {
       console.error("Error fetching subjects:", error);
     }
-  }  // closes fetchSubjects()
+  }
 
   useEffect(() => {
     fetchSubjects();
@@ -40,7 +53,10 @@ function App() {
     setEditingSubjectName(name);
     const subject = subjects.find((subj) => subj.name === name);
     if (subject) {
-      setEditedSubject({ name: subject.name, description: subject.description });
+      setEditedSubject({
+        name: subject.name,
+        description: subject.description,
+      });
     }
   }
 
@@ -57,9 +73,11 @@ function App() {
     fetchSubjects();
   }
 
-async function handleDeleteSubject(name) {
-    const ok = window.confirm(`Are you sure you want to delete the subject "${name}"?`);
-    if (!ok) return;  
+  async function handleDeleteSubject(name) {
+    const ok = window.confirm(
+      `Are you sure you want to delete the subject "${name}"?`
+    );
+    if (!ok) return;
 
     await fetch(`${API_BASE_URL}/subjects/${name}`, {
       method: "DELETE",
@@ -72,7 +90,7 @@ async function handleDeleteSubject(name) {
     <div className="App">
       <h1>StudyMate</h1>
 
-      {/*Add new subject*/}
+      {/* Add new subject */}
       <form onSubmit={handleAddSubject}>
         <input
           type="text"
@@ -96,27 +114,32 @@ async function handleDeleteSubject(name) {
         <button type="submit">Add Subject</button>
       </form>
 
-        {/*List of subjects*/}
+      {/* List of subjects */}
       <ul style={{ listStyleType: "none", padding: 0 }}>
         {subjects.map((subject) => (
-          <li key={subject.id}
-              style={{ 
-                border: "1px solid #ccc", 
-                padding: "1rem", 
-                marginBottom: "1rem", 
-                borderRadius: "5px" 
-              }}>
-
+          <li
+            key={subject.id}
+            style={{
+              border: "1px solid #ccc",
+              padding: "1rem",
+              marginBottom: "1rem",
+              borderRadius: "5px",
+            }}
+          >
             {editingSubjectName === subject.name ? (
-              //Edit mode
-              <form onSubmit={(e) => handleUpdateSubject(e, subject.name)}
-              style={{marginBottom: "0.5rem"}}
+              // Edit mode
+              <form
+                onSubmit={(e) => handleUpdateSubject(e, subject.name)}
+                style={{ marginBottom: "0.5rem" }}
               >
                 <input
                   type="text"
                   value={editedSubject.name}
                   onChange={(e) =>
-                    setEditedSubject({ ...editedSubject, name: e.target.value })
+                    setEditedSubject({
+                      ...editedSubject,
+                      name: e.target.value,
+                    })
                   }
                   style={{
                     display: "block",
@@ -129,7 +152,10 @@ async function handleDeleteSubject(name) {
                   type="text"
                   value={editedSubject.description}
                   onChange={(e) =>
-                    setEditedSubject({ ...editedSubject, description: e.target.value })
+                    setEditedSubject({
+                      ...editedSubject,
+                      description: e.target.value,
+                    })
                   }
                   style={{
                     display: "block",
@@ -137,19 +163,32 @@ async function handleDeleteSubject(name) {
                     width: "100%",
                   }}
                 />
-                <button type="submit" style={{ marginRight: "0.5rem" }}>Save</button>
-                <button type="button" onClick={() => setEditingSubjectName(null)}>Cancel</button>
+                <button type="submit" style={{ marginRight: "0.5rem" }}>
+                  Save
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditingSubjectName(null)}
+                >
+                  Cancel
+                </button>
               </form>
             ) : (
-              //Display mode
+              // Display mode
               <>
                 <h2>{subject.name}</h2>
                 <p>{subject.description}</p>
-                <button onClick={() => startEditing(subject.name)} style={{ marginRight: "0.5rem" }}>Edit</button>
-                <button onClick={() => handleDeleteSubject(subject.name)}>Delete</button>
+                <button
+                  onClick={() => startEditing(subject.name)}
+                  style={{ marginRight: "0.5rem" }}
+                >
+                  Edit
+                </button>
+                <button onClick={() => handleDeleteSubject(subject.name)}>
+                  Delete
+                </button>
               </>
             )}
-
           </li>
         ))}
       </ul>
@@ -157,7 +196,7 @@ async function handleDeleteSubject(name) {
       <h2>All Subjects</h2>
       <ul>
         {subjects.map((subject) => (
-          <li key={subject.id}>     
+          <li key={subject.id}>
             <h2>{subject.name}</h2>
             <p>{subject.description}</p>
           </li>
@@ -165,6 +204,6 @@ async function handleDeleteSubject(name) {
       </ul>
     </div>
   );
-} 
+}
 
 export default App;
