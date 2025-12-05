@@ -3,7 +3,7 @@ import "./Register.css";
 
 const API_BASE_URL = "http://localhost:8000";
 
-function RegisterPage() {
+function RegisterPage({ goToLogin }) {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -125,6 +125,17 @@ function RegisterPage() {
                 required
               />
             </div>
+
+              <p className="signin-text">
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  className="link-button"
+                  onClick={goToLogin}
+                >
+                  Sign in
+                </button>
+              </p>
 
             <label className="checkbox-row">
               <input

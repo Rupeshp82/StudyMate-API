@@ -19,6 +19,18 @@ class UserOut(UserBase):
     class Config:
         orm_mode = True
 
+# Token schemas
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    user_id: Optional[int] = None
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
 # Base schema for Subject
 class SubjectBase(BaseModel):
     name: str

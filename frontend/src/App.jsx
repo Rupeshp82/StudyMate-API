@@ -1,14 +1,31 @@
 import { useEffect, useState } from "react";
 import RegisterPage from "./app/register/page";
+import LoginPage from "./app/login/page";
 import "./App.css";
 
 const API_BASE_URL = "http://localhost:8000";
 
 // Top-level app: choose which page to show
 function App() {
-  const showRegister = true; // change to false later to see subjects UI
+  const [currentPage, setCurrentPage] = useState("register");
 
-  return showRegister ? <RegisterPage /> : <SubjectsPage />;
+  if (currentPage === "register") {
+    return (
+      <RegisterPage 
+        goToLogin={() => setCurrentPage("login")} 
+      />
+    );
+  }
+
+  if (currentPage === "login") {
+    return (
+      <LoginPage 
+        goToRegister={() => setCurrentPage("register")} 
+      />
+    );
+  }
+
+  return null; // fallback (not used now)
 }
 
 // Your old subjects UI moved here
