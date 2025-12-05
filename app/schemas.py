@@ -1,6 +1,25 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
+#schemas for registering users
+# --------- Auth Schemas ---------
+
+class UserBase(BaseModel):
+    email: EmailStr
+
+class UserCreate(UserBase):
+    username: str
+    password: str   # only new field needed
+
+class UserOut(UserBase):
+    id: int
+    username: str
+    is_active: bool
+
+    class Config:
+        orm_mode = True
+
+# Base schema for Subject
 class SubjectBase(BaseModel):
     name: str
     description: Optional[str] = None
