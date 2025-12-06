@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from datetime import timedelta
@@ -70,26 +70,27 @@ def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 @router.post("/login", response_model=schemas.Token)
-def login_user(login_req: schemas.LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.email == login_req.email).first()
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db),
+):
+    # We use email as "username" in the OAuth2PasswordRequestForm
+    user = db.query(models.User).filter(models.User.email == form_data.username).first()
 
-    if not user or not verify_password(login_req.password, user.hashed_password):
+    if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid email or password.",
-            headers={"WWW-Authenticate": "Bearer"},
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect email or password.",
         )
 
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"user_id": user.id},
-        expires_delta=access_token_expires,
-    )
-
-    return {"access_token": access_token, "token_type": "bearer"}
+    access_token = create_access_token({"user_id": user.id})
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
 
 @router.get("/me", response_model=schemas.UserOut)
-def get_me(current_user: models.User = Depends(get_current_user)):
+def read_users_me(current_user: models.User = Depends(get_current_user)):
     return current_user
 
 

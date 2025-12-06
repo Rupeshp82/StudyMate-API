@@ -35,6 +35,34 @@ class LoginRequest(BaseModel):
     email: EmailStr
     password: str
 
+#schemas for user profiles
+class UserProfileBase(BaseModel):
+    full_name: Optional[str] = None
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    address: Optional[str] = None
+    university: Optional[str] = None
+    experience: Optional[str] = None
+    projects: Optional[str] = None
+    bio: Optional[str] = None
+    skills: Optional[str] = None
+
+
+class UserProfileCreate(UserProfileBase):
+    pass
+
+
+class UserProfileUpdate(UserProfileBase):
+    pass
+
+
+class UserProfileOut(UserProfileBase):
+    id: int
+    user_id: int
+
+    class Config:
+        orm_mode = True
+        
 # Base schema for Subject
 class SubjectBase(BaseModel):
     name: str
