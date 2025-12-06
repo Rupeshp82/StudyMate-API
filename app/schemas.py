@@ -19,6 +19,10 @@ class UserOut(UserBase):
     class Config:
         orm_mode = True
 
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[EmailStr] = None
+    
 # Token schemas
 class Token(BaseModel):
     access_token: str

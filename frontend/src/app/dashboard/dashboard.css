@@ -1,0 +1,34 @@
+.dashboard-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #ecfeff, #e0f2fe, #cffafe);
+}
+
+.dashboard-card {
+  background: white;
+  padding: 2rem 3rem;
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.logout-btn {
+  margin-top: 1.2rem;
+  padding: 0.7rem 1.5rem;
+  background: #ef4444;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+}
